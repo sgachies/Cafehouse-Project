@@ -57,7 +57,7 @@
 					$response = "Enter ID Number";
 					break;
 				case 2:
-					$response = "Coffee" . PHP_EOL . "Tea";
+					$response = "1.Coffee" . PHP_EOL . "2.Tea";
 					break;
 				case 3:
 					$response = "We running a Promo Please send the Word Yes to get messages for next Promo";
@@ -72,6 +72,7 @@
 		}
 		
 			function logRequest($phone,$text){
+				if(!empty($text)){
 				$result = mysql_query("INSERT INTO ussd_logs (phone,text) VALUES ('$phone','$text')");
 				return $result;
 				
@@ -82,13 +83,13 @@
 								$response = "Enter first name";
 								break;
 							case 2:
-								//validate whether it is 1 or 2
-								if($exploded_text[1] == A){
-									$response = "Where are you";
-								}elseif($exploded_text[1] == B){
-									$response = "Where are they";
+								
+								if($exploded_text[1] == 1){
+									$response = "1.Mocha".PHP_EOL."2.Latte";
+								}else if($exploded_text[1] == 2){
+									$response = "3.Black".PHP_EOL."4.White";
 								}else{
-									$response = "select 1 or 2";
+									$response = "Invalid entry";
 								}
 								break;
 							case 3:
@@ -102,30 +103,36 @@
 					}
 					
 					
-					function ThirdMenuSwitch($exploded_text){
-						switch (trim(strtolower($exploded_text[0]))) {
-							case 1:
-								$response = "Enter last name";
-								break;
-							case 2:
-								//validate whether it is 1 or 2
-								if($exploded_text[1] == A){
-									$response = "Where are you";
-								}elseif($exploded_text[1] == B){
-									$response = "Where are they";
-								}else{
-									$response = "select 1 or 2";
-								}
-								break;
-							case 3:
-								$response = "Thanks for your feedback";
-								break;
-							default:
-								$response = "Invalid Entry2.".PHP_EOL.getHomeMenu();
-								break;
+			function ThirdMenuSwitch($exploded_text){
+				switch (trim(strtolower($exploded_text[0]))) {
+					case 1:
+						$response = "Enter last name";
+						break;
+					case 2:
+						if($exploded_text[2] == 1){
+						$response = "1.You have selected Mocha Coffee<\n>Price is ksh.200\nPay the amount through Playbill 122000 Account number as 54#Quantity";
+						}else if($exploded_text[2] ==2 ){
+						$response = "2.You have selected Latte Coffee<\n>Price is ksh.180\nPay the amount through Playbill 122000 Account number as 40#Quantity";
+						
+						}else if($exploded_text[2] == 3){
+						$response = "You have selected Black tea<\n>Price is ksh.100\nPay the amount through Playbill 122000 Account number as 52#Quantity";
+						
+						}else if($exploded_text[2] == 4){
+						$response = "\nYou have selected White Tea\nPrice is ksh.80\nPay the amount through Playbill 122000 Account number as 59#Quantity";
+						}else{
+							$response = "Invalid entry";
 						}
-						return $response;
-					}
+						
+						break;
+					case 3:
+						$response = "Thanks for your feedback";
+						break;
+					default:
+						$response = "Invalid Entry2.".PHP_EOL.getHomeMenu();
+						break;
+				}
+				return $response;
+			}
 					
 						function FourthMenuSwitch($phoneNumber,$exploded_text){
 						switch (trim(strtolower($exploded_text[0]))) {
@@ -135,13 +142,7 @@
 								break;
 							case 2:
 								//validate whether it is 1 or 2
-								if($exploded_text[1] == A){
-									$response = "Where are you";
-								}elseif($exploded_text[1] == B){
-									$response = "Where are they";
-								}else{
-									$response = "select 1 or 2";
-								}
+							
 								break;
 							case 3:
 								$response = "Thanks for your feedback";
@@ -154,27 +155,25 @@
 					}
 					
 					//register user function
-					function registerUser($phone,$exploded_text)
-	{
-		
-		$national_id = $exploded[1];
-		$first_name = $exploded[2];
-		$last_name = $exploded[3];
-		
-		//check if the user exists
-		$query = mysql_query("SELECT phone FROM users WHERE phone='$phone'");
-		if(mysql_num_rows($query)> 0){
-			return "You are already registered";
-		}else{
-			//create the user
-			$result = mysql_query("INSERT INTO users (phone,first_name,last_name,national_id) VALUES ('$phone','$first_name','$last_name','$national_id')");
-			if($result){
-				$reply = "You are registered successfully.";
-				return $reply;
-			}
-		   // return $query;
-		}
-	}
+					function registerUser($phone,$exploded_text){
+					$national_id = $exploded[1];
+					$first_name = $exploded[2];
+					$last_name = $exploded[3];
+
+					//check if the user exists
+					$query = mysql_query("SELECT phone FROM users WHERE phone='$phone'");
+					if(mysql_num_rows($query)> 0){
+					return "You are already registered";
+					}else{
+					//create the user
+					$result = mysql_query("INSERT INTO users (phone,first_name,last_name,national_id) VALUES ('$phone','$first_name','$last_name','$national_id')");
+					if($result){
+					$reply = "You are registered successfully.";
+					return $reply;
+					}
+					// return $query;
+					}
+					}
 	
 		function sendSMS($recipients,$msg){
 		require_once('AfricasTalkingGateway.php');
