@@ -2,10 +2,10 @@
 				
 	include('connect.php');
 	include('AfricasTalkingGateway.php');
-	$sessionId = $_REQUEST["sessionId"];
-	$serviceCode = $_REQUEST["serviceCode"];
-	$phoneNumber = $_REQUEST["phoneNumber"];
-	$text = $_REQUEST["text"];
+	$sessionId   =   $_REQUEST["sessionId"];
+	$serviceCode =   $_REQUEST["serviceCode"];
+	$phoneNumber =   $_REQUEST["phoneNumber"];
+	$text        =   $_REQUEST["text"];
 	
 
 	
@@ -30,7 +30,10 @@
 		$response = secondMenuSwitch($exploded_text);
 	break;
 	case 3:
-		$response = ThirdMenuSwitch($exploded_text);
+		$response = ThirdMenuSwitch($phoneNumber,$exploded_text);
+		//sendSMS($phoneNumber,$response);
+		echo "END ".$response;
+		exit;
 	break;
 	case 4:
 		$response = FourthMenuSwitch($phoneNumber,$exploded_text);
@@ -48,9 +51,11 @@
 	echo "CON ".$response;
 	exit;
 	
+
+	
 	//HOME MENU FUNCTION
 	function getHomeMenu(){
-	$response = "\n*Welcome to Cafe House*".PHP_EOL."1.Register".PHP_EOL."2.Menu".PHP_EOL."3.Promo".PHP_EOL."4.Feedback".PHP_EOL."5.Outlets";
+	$response = "\n*Welcome to Cafe House*".PHP_EOL."1.Verify registration".PHP_EOL."2.Cafe Menu List".PHP_EOL."3.Reedem Loyalty Point".PHP_EOL."4.Check Outlets";
 	return $response;
 	}
 	
@@ -62,13 +67,15 @@
 			$response = "Enter ID Number";
 		break;
 		case 2:
-			$response = "\n-Menu List-\n1.Coffee" . PHP_EOL . "2.Tea";
+			$response = "\n-Menu List-\n1.Coffee" . PHP_EOL . "2.Organic Tea".  PHP_EOL . "3.Cakes list";
 		break;
 		case 3:
-			$response = "We running a Promo Please send the Word Yes to get messages for next Promo";
+			$response = "Using our this service will earn your points and rewards send you full name*id to 45245 and you will automatically get started\nN.B This will charge you ksh.3 only\nThank you.";
 		break;
 		case 4:
-			echo "First Menu switch case 4 :)";
+			$response="Our Cafe Outlets \n1.Nakumatt Lifestyle Cafe shop\n2.Thika Tuskies Mall Cafe shop\n3.TRM Mall Cafe shop\nMobile: 254723401197\nOffice: 0625446789";
+		break;
+	
 		default:
 			$response = getHomeMenu();
 		break;
@@ -87,6 +94,8 @@
 			$response = "\n-Coffee List-\n1.Cafe Mocha" . PHP_EOL . "2.Caffe Latte". PHP_EOL . "3.Coffee milk". PHP_EOL . "4.Americano";
 			}else if($exploded_text[1] == 2){
 			$response = "\n-Coffee List-\n5.Black Tea" . PHP_EOL . "6.White Tea". PHP_EOL . "7.Green Tea";
+			}else if($exploded_text[1] == 3){
+			$response = "\n-Coffee List-\n8.Rice Cake" . PHP_EOL . "9.White Cakes";
 			}else{
 			$response = "Invalid entry";
 			}
@@ -102,26 +111,30 @@
 	}
 	
 	//THIRD MENU SWITCH FUNCTION 	
-	function ThirdMenuSwitch($exploded_text){
+	function ThirdMenuSwitch($phoneNumber,$exploded_text){
 		switch (trim(strtolower($exploded_text[0]))) {
 		case 1:
 			$response = "Enter last name";
 		break;
 		case 2:
-				if($exploded_text[2] == 1){
-				$response = "Buy Product\nYou have selected Cafe Mocha \nPrice is ksh.220\nPay the amount through Playbill 122000 Account number as 11#Quantity";
+			if($exploded_text[2] == 1){
+				$response = "Thank you for selecting Cafe Mocha\nPrice is ksh.150.00\nPay the amount through Pay Bill No. 122000 A/c No. is 11";
 			}else if($exploded_text[2] == 2){
-				$response = "Buy Product\nYou have selected Latte Coffee Latte \nPrice is ksh.180\nPay the amount through Playbill 122000 Account number as 22#Quantity";
+				$response = "Thank you for selecting Caffe Latte\nPrice is ksh.180.00\nPay the amount through Pay Bill No. 122000 A/c No. is 22";
 			}else if($exploded_text[2] == 3){
-				$response = "Buy Product\nYou have selected Coffee Milk\nPrice is ksh.150\nPay the amount through Playbill 122000 Account number as 33#Quantity";
+				$response = "Thank you for selecting Coffee Milk\nPrice is ksh.230.00\nPay the amount through Pay Bill No. 122000 A/c No. is 33";
 			}else if($exploded_text[2] == 4){
-				$response = "Buy Product\nYou have selected Americano \nPrice is ksh.160\nPay the amount through Playbill 122000 Account number as 44#Quantity";
+				$response = "Thank you for selecting Americano\nPrice is ksh.150.00\nPay the amount through Pay Bill No. 122000 A/c No. is 44";
 			}else if($exploded_text[2] == 5){
-				$response = "Buy Product\nYou have selected Black Tea \nPrice is ksh.160\nPay the amount through Playbill 122000 Account number as 55#Quantity";
+				$response = "Thank you for selecting Black Tea\nPrice is ksh.210.00\nPay the amount through Pay Bill No. 122000 A/c No. is 55";
 			}else if($exploded_text[2] == 6){
-				$response = "Buy Product\nYou have selected White Tea \nPrice is ksh.160\nPay the amount through Playbill 122000 Account number as 66#Quantity";
+				$response = "Thank you for selecting White Tea\nPrice is ksh.110.00\nPay the amount through Pay Bill No. 122000 A/c No. is 66";
 			}else if($exploded_text[2] == 7){
-				$response = "Buy this Product\nYou have selected Green Tea \nPrice is ksh.160\nPay the amount through Playbill 122000 Account number as 77#Quantity";
+				$response = "Thank you for selecting Green Tea\nPrice is ksh.100.00\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
+			}else if($exploded_text[2] == 8){
+				$response = "Thank you for selecting Rice Cake \nPrice is ksh.100.00 1/4 piece\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
+			}else if($exploded_text[2] == 9){
+				$response = "Thank you for selecting White Cake \nPrice is ksh.100.00 1/4 piece\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
 			}else{
 				$response = "\nInvalid Entry." . PHP_EOL . getHomeMenu();
 			}
@@ -131,11 +144,11 @@
 				$response = "END Thanks for your feedback";
 			break;
 			default:
-				$response = "\nInvalid Entry." . PHP_EOL . getHomeMenu();
+				$response = "\nInvalid Entry default." . PHP_EOL . getHomeMenu();
 			break;
 			}
 			return $response;
-			}
+		}
 		
 		//FOURTH MENU SWITCH FUNCTION 	
 		function FourthMenuSwitch($phoneNumber,$exploded_text){
@@ -151,14 +164,16 @@
 				$response = "Thanks for your feedback";
 			break;
 			default:
-				$response = registerUser($phoneNumber,$exploded_text);
+				$response = "\nInvalid Entry default." . PHP_EOL . getHomeMenu();
+			break;
 			}
 			return $response;
 		}
 	
+		
+		
 		//lOG REQUEST USSD_LOG FUNCTION
 		logRequest($phoneNumber,$text);
-		
 		function logRequest($phone,$text){
 		if(!empty($text)){
 		$result = mysql_query("INSERT INTO ussd_logs (phone,text) VALUES ('$phone','$text')");
@@ -172,12 +187,12 @@
 		$first_name = $exploded[2];
 		$last_name = $exploded[3];
 		//check if the user exists
-		$query = mysql_query("SELECT phone FROM users WHERE phone='$phone'");
+		$query = mysql_query("SELECT * FROM users WHERE phone='$phone'");
 		if(mysql_num_rows($query)> 0){
 		return "You are already registered";
 		}else{
 		//create the user
-		$result = mysql_query("INSERT INTO users (phone,first_name,last_name,national_id) VALUES ('$phone','$first_name','$last_name','$national_id')");
+		$result = mysql_query("INSERT INTO users (phone,national_id,first_name,last_name,) VALUES ('$phone','$national_id','$first_name','$last_name')");
 		if($result){
 		$reply = "You are registered successfully.";
 		return $reply;
@@ -199,13 +214,6 @@
 		// Thats it, hit send and we'll take care of the rest.
 		$results = $gateway->sendMessage($recipients, $message,$from);
 		foreach($results as $result) {
-		// Note that only the Status "Success" means the message was sent
-		/*
-		echo " Number: " .$result->number;
-		echo " Status: " .$result->status;
-		echo " MessageId: " .$result->messageId;
-		echo " Cost: " .$result->cost."\n";
-		*/
 		}
 		}
 		catch ( AfricasTalkingGatewayException $e )
