@@ -1,3 +1,4 @@
+
 <?php
 
 	//my number ->0726371675 
@@ -25,6 +26,8 @@
 	}
 
 	
+	
+
 	//SWITCH MENU LISTS
 	switch (trim(strtolower($level))) {
 	case 0:
@@ -35,11 +38,11 @@
 		$response = firstMenuSwitch(end($exploded_text));
 	break;
 	case 2:
-		$response = secondMenuSwitch($exploded_text);
+		$response = secondMenuSwitch($phoneNumber,$exploded_text);
 	break;
 	case 3:
 		$response = ThirdMenuSwitch($phoneNumber,$exploded_text);
-		sendSMS($phoneNumber,$response);
+		//sendSMS($phoneNumber,$response);
 		echo "END ".$response;
 		exit;
 	break;
@@ -56,10 +59,7 @@
 	exit;
 	
 	
-	
-	
 
-	
 	//HOME MENU FUNCTION
 	function getHomeMenu(){
 	$response = "\n*Welcome to Cafe House*".PHP_EOL."1.Verify registration".PHP_EOL."2.Cafe Menu List".PHP_EOL."3.Reedem Loyalty Point".PHP_EOL."4.Check Outlets";
@@ -78,17 +78,13 @@
 			$response = "\n-Menu List-\n1.Coffee" . PHP_EOL . "2.Organic Tea".  PHP_EOL . "3.Cakes list";
 		break;
 		case 3:
-			$response = "\n-Loyalty Points-\nUsing this service will earn you points and rewards.\nSend your details as shown -> FULL_NAME*ID to 2457 and you will be activated to this service.\nN.B This service will charge you ksh.3.00 only.\nThank you.";
-			
-			echo $phoneNumber="0723401197";
-			sendSMS($phoneNumber,$response);
-			echo "END ".$response;
-			exit;
+			$response = "\n-Loyalty Points-\n1.View my Points" . PHP_EOL . "2.Get instruction to get started";
+		
 		break;
 		case 4:
 			$response="\n-Our Cafe Outlets-\n1.Nakumatt Lifestyle Cafe shop\n2.Thika Tuskies Mall Cafe shop\n3.TRM Mall Cafe shop\n-Conacts us-\nMobile: 254723401197\nOffice: 0625446789";
-			echo $phoneNumber="0723401197";
-			sendSMS($phoneNumber,$response);
+			//echo $phoneNumber="0723401197";
+			//sendSMS($phoneNumber,$response);
 			echo "END ".$response;
 			exit;
 		break;
@@ -100,11 +96,12 @@
 	}
 	
 	//SECOND MENU SWITCH FUNCTION 	
-	function secondMenuSwitch($exploded_text){
+	function secondMenuSwitch($phoneNumber,$exploded_text){
 		switch (trim(strtolower($exploded_text[0]))) {
 		case 1:
-			$response = "You verifiction is successful your are active to this promo";
-			echo "END  ".$response;
+	    
+			$response = verifyUser($phoneNumber,$exploded_text);
+			echo "END ".$response;
 			exit;
 			
 		break;
@@ -120,7 +117,24 @@
 			}
 		break;
 		case 3:
-			$response = "Thanks for your feedback";
+			if($exploded_text[1] == 1){
+			//Check your points
+			$response = checkPoints($phoneNumber);
+			echo "END ".$response;
+			exit;
+			
+			}else if($exploded_text[1] == 2){
+			$response = "-Loyalty Points-\nUsing this service will earn you points.Register by sending FULL_NAME*ID to 1234.\nN.B you will be charged ksh.3.00 only.Thank you.";
+			//sendSMS($phoneNumber,$response);
+			echo "END ".$response;
+			exit;
+			}else{
+			$response = "Invalid entry select 1 to view points or 2 to get instructions";
+			
+			}
+			
+		
+			
 		break;
 		default:
 			$response = "Invalid Entry2.". PHP_EOL . getHomeMenu();
@@ -133,7 +147,7 @@
 	function ThirdMenuSwitch($phoneNumber,$exploded_text){
 		switch (trim(strtolower($exploded_text[0]))) {
 		case 1:
-			$response = "Enter last name";
+			
 		break;
 		case 2:
 			if($exploded_text[2] == 1){
@@ -157,14 +171,10 @@
 			}else{
 				$response = "\nInvalid Entry." . PHP_EOL . getHomeMenu();
 			}
-
-			
-			
+		
 			break;
 			case 3:
-				$response = "Thanks for your feedback";
-				echo "END ".$response;
-				exit;
+				
 			break;
 			default:
 			
@@ -172,28 +182,6 @@
 			}
 			return $response;
 		}
-		
-		//FOURTH MENU SWITCH FUNCTION 	
-		function FourthMenuSwitch($exploded_text){
-			switch (trim(strtolower($exploded_text[0]))) {
-			case 1:
-				
-			break;
-			case 2:
-				
-				
-			break;
-			case 3:
-				$response = "Thanks for your feedback";
-			break;
-			default:
-				$response = "\nInvalid Entry default 4th menu switch." . PHP_EOL . getHomeMenu();
-			break;
-			}
-			return $response;
-		}
-	
-		
 		
 		//lOG REQUEST USSD_LOG FUNCTION
 		logRequest($phoneNumber,$text);
@@ -203,27 +191,37 @@
 		return $result;
 		}
 		}
+		//CHECK FOR POINTS
+		function checkPoints($phoneNumber){
+				  $query = mysql_query("SELECT points FROM user_points WHERE phone_number='$phoneNumber' ");
+					while($rows = mysql_fetch_array($query)){;	
+					$points_array = array($rows['points']);
+					$points=array_sum($points_array);
+					 $count+=$points;	
+				}
+					//1 Point = ksh 3 each transaction will earn a user ksh.3.00 for any product bought using Mpesa
+				   $amount= $count*2;
+					return $response = "You have $count points in your account worth ksh.$amount.00\nYou can reedem them at our outlets to get free beverages and meals";
+				  
+		}
+		   
+		//VERIFY NEW USER
+		function verifyUser($phoneNumber,$exploded_text){
+	        $national_id = $exploded_text[1];
+		    $query = mysql_query("SELECT * FROM users WHERE phone_number='$phoneNumber' AND national_id='$national_id'");			
+				$rows = mysql_fetch_array($query);
+				$name = $rows['full_name'];
+				if(mysql_num_rows($query)> 0){
+				return $response= $name. " You are already registered to this service";
+				}else{
+			    //If doesnot exist send an sms
+				return $response = "This service is not activated on your phone.You shall recieve a text message on how to register";
+				}
+		   }
+			
+			
 		
-		//REGISTER NEW USER
-		function registerUser($phone,$exploded_text){
-		$national_id = $exploded[1];
-		$first_name = $exploded[2];
-		$last_name = $exploded[3];
-		//check if the user exists
-		$query = mysql_query("SELECT * FROM users WHERE phone='$phone'");
-		if(mysql_num_rows($query)> 0){
-		return "You are already registered";
-		}else{
-		//create the user
-		$result = mysql_query("INSERT INTO users (phone,national_id,first_name,last_name,) VALUES ('$phone','$national_id','$first_name','$last_name')");
-		if($result){
-		$reply = "You are registered successfully.";
-		return $reply;
-		}
-		// return $query;
-		}
-		}
-		
+		  
 		//SEND SMS FUNCTION USING AFRICA'S TALKING API
 		function sendSMS($recipients,$msg){
 		//require_once('AfricasTalkingGateway.php');
