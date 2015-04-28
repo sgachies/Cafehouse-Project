@@ -1,4 +1,11 @@
 <?php
+
+	//my number ->0726371675 
+	//sendSMS($phoneNumber,$response);
+	//Issues
+	//Sending message of invalid entry in the if else statement when user selects wrong entry.
+	//functions parameter phone number not accessible therefore improvise echo $phoneNumber="0723401197";
+	//register user
 				
 	include('connect.php');
 	include('AfricasTalkingGateway.php');
@@ -24,6 +31,7 @@
 		$response = getHomeMenu();
 	break;
 	case 1:
+		//end — Set the internal pointer of an array to its last element
 		$response = firstMenuSwitch(end($exploded_text));
 	break;
 	case 2:
@@ -31,25 +39,24 @@
 	break;
 	case 3:
 		$response = ThirdMenuSwitch($phoneNumber,$exploded_text);
-		//sendSMS($phoneNumber,$response);
+		sendSMS($phoneNumber,$response);
 		echo "END ".$response;
 		exit;
 	break;
 	case 4:
-		$response = FourthMenuSwitch($phoneNumber,$exploded_text);
-		sendSMS($phoneNumber,$response);
-		echo "END ".$response;
-		exit;
+		$response = FourthMenuSwitch($exploded_text);
 	break;
 	default:
 		$response = "Invalid entry";
 	break;
 	}
 	
-	
 	header('Content-type: text/plain');
 	echo "CON ".$response;
 	exit;
+	
+	
+	
 	
 
 	
@@ -62,20 +69,29 @@
 	
 	//FIRST MENU SWITCH FUNCTION 
 	function firstMenuSwitch($choice){
+
 		switch (trim(strtolower($choice))) {
 		case 1:
-			$response = "Enter ID Number";
+			$response = "Enter ID Number to verify your activation";
 		break;
 		case 2:
 			$response = "\n-Menu List-\n1.Coffee" . PHP_EOL . "2.Organic Tea".  PHP_EOL . "3.Cakes list";
 		break;
 		case 3:
-			$response = "Using our this service will earn your points and rewards send you full name*id to 45245 and you will automatically get started\nN.B This will charge you ksh.3 only\nThank you.";
+			$response = "\n-Loyalty Points-\nUsing this service will earn you points and rewards.\nSend your details as shown -> FULL_NAME*ID to 2457 and you will be activated to this service.\nN.B This service will charge you ksh.3.00 only.\nThank you.";
+			
+			echo $phoneNumber="0723401197";
+			sendSMS($phoneNumber,$response);
+			echo "END ".$response;
+			exit;
 		break;
 		case 4:
-			$response="Our Cafe Outlets \n1.Nakumatt Lifestyle Cafe shop\n2.Thika Tuskies Mall Cafe shop\n3.TRM Mall Cafe shop\nMobile: 254723401197\nOffice: 0625446789";
+			$response="\n-Our Cafe Outlets-\n1.Nakumatt Lifestyle Cafe shop\n2.Thika Tuskies Mall Cafe shop\n3.TRM Mall Cafe shop\n-Conacts us-\nMobile: 254723401197\nOffice: 0625446789";
+			echo $phoneNumber="0723401197";
+			sendSMS($phoneNumber,$response);
+			echo "END ".$response;
+			exit;
 		break;
-	
 		default:
 			$response = getHomeMenu();
 		break;
@@ -87,7 +103,10 @@
 	function secondMenuSwitch($exploded_text){
 		switch (trim(strtolower($exploded_text[0]))) {
 		case 1:
-			$response = "Enter first name";
+			$response = "You verifiction is successful your are active to this promo";
+			echo "END  ".$response;
+			exit;
+			
 		break;
 		case 2:
 			if($exploded_text[1] == 1){
@@ -118,53 +137,57 @@
 		break;
 		case 2:
 			if($exploded_text[2] == 1){
-				$response = "Thank you for selecting Cafe Mocha\nPrice is ksh.150.00\nPay the amount through Pay Bill No. 122000 A/c No. is 11";
+				$response = "\nThank you for selecting Cafe Mocha.\nPrice is ksh.150.00\nPay the amount through Pay Bill No. 122000 A/c No. is 11";
 			}else if($exploded_text[2] == 2){
-				$response = "Thank you for selecting Caffe Latte\nPrice is ksh.180.00\nPay the amount through Pay Bill No. 122000 A/c No. is 22";
+				$response = "\nThank you for selecting Caffe Latte.\nPrice is ksh.180.00\nPay the amount through Pay Bill No. 122000 A/c No. is 22";
 			}else if($exploded_text[2] == 3){
-				$response = "Thank you for selecting Coffee Milk\nPrice is ksh.230.00\nPay the amount through Pay Bill No. 122000 A/c No. is 33";
+				$response = "\nThank you for selecting Coffee Milk.\nPrice is ksh.230.00\nPay the amount through Pay Bill No. 122000 A/c No. is 33";
 			}else if($exploded_text[2] == 4){
-				$response = "Thank you for selecting Americano\nPrice is ksh.150.00\nPay the amount through Pay Bill No. 122000 A/c No. is 44";
+				$response = "\nThank you for selecting Americano.\nPrice is ksh.150.00\nPay the amount through Pay Bill No. 122000 A/c No. is 44";
 			}else if($exploded_text[2] == 5){
-				$response = "Thank you for selecting Black Tea\nPrice is ksh.210.00\nPay the amount through Pay Bill No. 122000 A/c No. is 55";
+				$response = "\nThank you for selecting Black Tea.\nPrice is ksh.210.00\nPay the amount through Pay Bill No. 122000 A/c No. is 55";
 			}else if($exploded_text[2] == 6){
-				$response = "Thank you for selecting White Tea\nPrice is ksh.110.00\nPay the amount through Pay Bill No. 122000 A/c No. is 66";
+				$response = "\nThank you for selecting White Tea.\nPrice is ksh.110.00\nPay the amount through Pay Bill No. 122000 A/c No. is 66";
 			}else if($exploded_text[2] == 7){
-				$response = "Thank you for selecting Green Tea\nPrice is ksh.100.00\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
+				$response = "\nThank you for selecting Green Tea.\nPrice is ksh.100.00\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
 			}else if($exploded_text[2] == 8){
-				$response = "Thank you for selecting Rice Cake \nPrice is ksh.100.00 1/4 piece\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
+				$response = "\nThank you for selecting Rice Cake.\nPrice is ksh.100.00 (1/4) piece\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
 			}else if($exploded_text[2] == 9){
-				$response = "Thank you for selecting White Cake \nPrice is ksh.100.00 1/4 piece\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
+				$response = "\nThank you for selecting White Cake.\nPrice is ksh.100.00 (1/4) piece\nPay the amount through Pay Bill No. 122000 A/c No. is 77";
 			}else{
 				$response = "\nInvalid Entry." . PHP_EOL . getHomeMenu();
 			}
+
+			
 			
 			break;
 			case 3:
-				$response = "END Thanks for your feedback";
+				$response = "Thanks for your feedback";
+				echo "END ".$response;
+				exit;
 			break;
 			default:
-				$response = "\nInvalid Entry default." . PHP_EOL . getHomeMenu();
+			
 			break;
 			}
 			return $response;
 		}
 		
 		//FOURTH MENU SWITCH FUNCTION 	
-		function FourthMenuSwitch($phoneNumber,$exploded_text){
+		function FourthMenuSwitch($exploded_text){
 			switch (trim(strtolower($exploded_text[0]))) {
 			case 1:
-				$response = registerUser($phoneNumber,$exploded_text);
-				sendSMS($phoneNumber,$response);
+				
 			break;
 			case 2:
-				//validate whether it is 1 or 2
+				
+				
 			break;
 			case 3:
 				$response = "Thanks for your feedback";
 			break;
 			default:
-				$response = "\nInvalid Entry default." . PHP_EOL . getHomeMenu();
+				$response = "\nInvalid Entry default 4th menu switch." . PHP_EOL . getHomeMenu();
 			break;
 			}
 			return $response;
