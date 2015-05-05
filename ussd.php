@@ -225,8 +225,8 @@
 		//SEND SMS FUNCTION USING AFRICA'S TALKING API
 		function sendSMS($recipients,$msg){
 		//require_once('AfricasTalkingGateway.php');
-		$username = "stevebab";
-		$apikey = "c8933dc169561310819188ca7d69db1a7a967a05bd3c952bad081ea3f71a5ce8";
+		$username = "";
+		$apikey = "";
 		//$recipients = "0723401197";
 		$message = $msg;
 		// Create a new instance of our awesome gateway class
